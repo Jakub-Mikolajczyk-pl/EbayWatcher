@@ -11,27 +11,37 @@ import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 @Service
 @Slf4j
 public class Scrapper {
-    public List<EbayItem> scrapp() throws IOException {
+    public List<EbayItem> scrapp(List<String> urlStrings) {
         //TODO: lista w bazie/zewnetrzna linkow
-        String urlStr = "https://www.ebay-kleinanzeigen.de/s-zu-verschenken/lauenau/anbieter:privat/anzeige:angebote" +
-                "/geschirrsp%C3%BCler-sp%C3%BClmaschine/k0c192l13461r50";
+        CopyOnWriteArrayList<EbayItem> ebayItems = new CopyOnWriteArrayList<>();
+        urlStrings.forEach(url -> ebayItems.addAll(scrappEbayItems(url)));
+        return ebayItems;
+    }
+
+    private List<EbayItem> scrappEbayItems(String urlStr) {
         List<EbayItem> ebayItems = new ArrayList<>();
-        var elements = Jsoup.connect(urlStr).userAgent(Constants.USER_AGENT).get().select("li.ad-listitem");
-        elements.forEach(element -> {
-            String scrappedUrl = element.select("div.aditem-image").select("a").attr("href");
-            String title = element.select("a.ellipsis").text();
-            String time = element.select("div.aditem-main--top--right").text();
-            String middleText = element.select("p.aditem-main--middle--description").text();
-            if (checkTime(time)) {
-                //TODO: Wrzucaj to na baze, żeby nie wyświetlać duplikatów
-                ebayItems.add(EbayItem.builder().url("https://www.ebay-kleinanzeigen.de/" + scrappedUrl)
-                                .title(title).damaged(checkIfDamaged(title, middleText)).build());
-            }
-        });
+        try {
+            var elements = Jsoup.connect(urlStr).userAgent(Constants.USER_AGENT).get().select("li.ad-listitem");
+            elements.forEach(element -> {
+                String scrappedUrl = element.select("div.aditem-image").select("a").attr("href");
+                String title = element.select("a.ellipsis").text();
+                String time = element.select("div.aditem-main--top--right").text();
+                String middleText = element.select("p.aditem-main--middle--description").text();
+                if (checkTime(time)) {
+                    //TODO: Wrzucaj to na baze, żeby nie wyświetlać duplikatów
+                    log.info("For " + urlStr + "found" + title);
+                    ebayItems.add(EbayItem.builder().url("https://www.ebay-kleinanzeigen.de/" + scrappedUrl)
+                            .title(title).damaged(checkIfDamaged(title, middleText)).build());
+                }
+            });
+        } catch (IOException e) {
+            log.error("Error when scrapping: " + urlStr + " - error description: " + e.getMessage());
+        }
         return ebayItems;
     }
 
