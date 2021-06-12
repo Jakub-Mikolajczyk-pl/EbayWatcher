@@ -32,7 +32,7 @@ public class WebsocketController {
 
     @MessageMapping("/startDefault")
     public void startTask() {
-        startScrappTask(10000);
+        startScrappTask(6*10000L);
     }
 
     @MessageMapping("/start")
