@@ -49,7 +49,7 @@ public class Scrapper {
                 }
             });
         } catch (IOException e) {
-            log.error("Error when scrapping: " + urlStr + " - error description: " + e.getMessage());
+            log.error("Error when scrapping: " + urlStr + " - error description: " + e);
         }
         return ebayItems;
     }
