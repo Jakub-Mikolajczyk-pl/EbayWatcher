@@ -1,4 +1,4 @@
-package de.ebay.watcher.ebayWatcher.controllers;
+package de.ebay.watcher.ebaywatcher.controllers;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

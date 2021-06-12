@@ -1,24 +1,25 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+      xmlns:th="http://www.thymeleaf.org" lang="pl">
 <head>
 
-    <title>Websocket Sample</title>
+    <title>Ebay Watcher</title>
     <meta name="description" content=""/>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 
-    <link rel="stylesheet" type="text/css" href="https://bootswatch.com/4/cerulean/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://bootswatch.com/4/cerulean/bootstrap.min.css"/>
     <link rel="stylesheet" type="text/css"
-          href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+          href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"/>
 
+    <!-- Load required Bootstrap and BootstrapVue CSS -->
+    <link type="text/css" rel="stylesheet" href="//unpkg.com/bootstrap/dist/css/bootstrap.min.css"/>
+    <link type="text/css" rel="stylesheet" href="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.css"/>
 </head>
 
 
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-    <a class="navbar-brand" href="#">Websocket</a>
+    <a class="navbar-brand" href="#">Ebay Watcher</a>
     <div class="collapse navbar-collapse" id="navbarColor01">
         <ul class="navbar-nav mr-auto">
         </ul>
@@ -26,27 +27,19 @@
 </nav>
 <div class="container">
     <div class="content" id="websocket">
-        <div>&nbsp;</div>
-        <div class="row" >
-            <div class="col">
-
-                <button class="btn btn-sm btn-info" @click="connect">Create connection</button>
-                <button class="btn btn-sm btn-success" @click="startTask">Start Task</button>
-                <button class="btn btn-sm btn-danger" @click="stopTask">Stop Task</button>
-                <button class="btn btn-sm btn-primary" @click="disconnect">Close connection</button>
-            </div>
-        </div>
-        <div>&nbsp;</div>
         <div class="row">
             <div class="col">
-                <ul class="list-group" style="height: 500px; overflow:scroll;">
-                    <li class="list-group-item d-flex justify-content-between align-items-center"
-                        v-for="(m,idx) in messages" :key="'m-'+idx">
-                        {{m}}
-                    </li>
-                </ul>
+                </br>
+                <button class="btn btn-sm btn-info" @click="connect">Włącz przeszukiwanie</button>
+                <button class="btn btn-sm btn-primary" @click="disconnect">Wyłącz przeszukiwanie</button>
             </div>
         </div>
+        <div>&nbsp;</div>
+        <b-table striped hover :items="messages" :fields="fields" >
+            <template #cell(url)="data">
+                <a :href="data.value" target="_blank"><b-button>Go to!</b-button></a>
+            </template>
+        </b-table>
     </div>
 </div>
 
@@ -58,11 +51,21 @@
 <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.17.0/dist/jquery.validate.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.17.0/dist/additional-methods.min.js"></script>
 <script src="https://unpkg.com/vue"></script>
-<!-- script src="https://vuejs.org/js/vue.min.js"></script -->
+<script src="https://vuejs.org/js/vue.min.js"></script>
 <script th:src="@{/stomp.js}"></script>
 <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.4/lodash.min.js"></script>
 <script th:src="@{/websocket.js}"></script>
+<!-- Load polyfills to support older browsers -->
+<script src="//polyfill.io/v3/polyfill.min.js?features=es2015%2CIntersectionObserver"
+        crossorigin="anonymous"></script>
+
+<!-- Load Vue followed by BootstrapVue -->
+<script src="//unpkg.com/vue@latest/dist/vue.min.js"></script>
+<script src="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.js"></script>
+
+<!-- Load the following for BootstrapVueIcons support -->
+<script src="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue-icons.min.js"></script>
 </body>
 
 </html>

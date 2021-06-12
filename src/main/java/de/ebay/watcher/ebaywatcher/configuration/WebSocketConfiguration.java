@@ -1,4 +1,4 @@
-package de.ebay.watcher.ebayWatcher.configuration;
+package de.ebay.watcher.ebaywatcher.configuration;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;

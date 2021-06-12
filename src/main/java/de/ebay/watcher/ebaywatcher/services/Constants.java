@@ -1,4 +1,4 @@
-package de.ebay.watcher.ebayWatcher.services;
+package de.ebay.watcher.ebaywatcher.services;
 
 public class Constants {
     public static final String USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) " +

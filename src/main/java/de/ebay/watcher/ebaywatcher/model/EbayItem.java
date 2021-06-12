@@ -1,4 +1,4 @@
-package de.ebay.watcher.ebayWatcher.model;
+package de.ebay.watcher.ebaywatcher.model;
 
 import lombok.Builder;
 import lombok.Data;
@@ -9,4 +9,5 @@ public class EbayItem {
     String url;
     String title;
     boolean damaged;
+    String addedTime;
 }

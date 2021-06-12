@@ -1,4 +1,4 @@
-package de.ebay.watcher.ebayWatcher;
+package de.ebay.watcher.ebaywatcher;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
