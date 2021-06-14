@@ -2,17 +2,20 @@ package de.ebay.watcher.ebaywatcher.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.ebay.watcher.ebaywatcher.services.Scrapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 @Controller
+@Slf4j
 public class WebsocketController {
 
     private final SimpMessagingTemplate simpMessagingTemplate;
@@ -22,6 +25,9 @@ public class WebsocketController {
     Future<?> submittedTask;
     @Value("#{${arrayOfURLS}}")
     private List<String> listOfURLs;
+    @Value("#{${arrayOfProxies}}")
+    private List<String> proxies;
+
 
     public WebsocketController(SimpMessagingTemplate simpMessagingTemplate, Scrapper scrapper) {
         this.simpMessagingTemplate = simpMessagingTemplate;
@@ -71,11 +77,21 @@ public class WebsocketController {
 
         submittedTask = executorService.submit(() -> {
             while (true) {
-                var payload = objectMapper.writeValueAsString(scrapper.scrapp(listOfURLs));
+                var payload = objectMapper.writeValueAsString(scrapper.scrapp(listOfURLs, proxies));
                 simpMessagingTemplate.convertAndSend(destination,
                         payload);
+                removeFromProxies();
                 Thread.sleep(scanDelay);
             }
         });
+    }
+
+    private void removeFromProxies() {
+        List<String> modifiableProxies = new ArrayList<>(proxies);
+        modifiableProxies.removeAll(scrapper.proxiesToRemove);
+        log.info("Deleted {} from proxy list", scrapper.proxiesToRemove);
+        scrapper.proxiesToRemove.clear();
+        this.proxies = modifiableProxies;
+        log.info("Proxies left: {}", this.proxies.size());
     }
 }
