@@ -62,8 +62,8 @@ public class WebsocketController {
 
     @MessageMapping("/addLink")
     public void addLinkToList(String url) {
-        listOfURLs.add(url);
         stopTask();
+        addLinkToScrappList(url);
         startTask();
     }
 
@@ -93,5 +93,12 @@ public class WebsocketController {
         scrapper.proxiesToRemove.clear();
         this.proxies = modifiableProxies;
         log.info("Proxies left: {}", this.proxies.size());
+    }
+
+    private void addLinkToScrappList(String link) {
+        List<String> modifiableLinks = new ArrayList<>(listOfURLs);
+        modifiableLinks.add(link);
+        log.info("Added link to scrapp list: {}", link);
+        this.listOfURLs = modifiableLinks;
     }
 }

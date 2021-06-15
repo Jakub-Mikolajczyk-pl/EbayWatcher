@@ -4,7 +4,8 @@ $(function () {
         el: "#websocket",
         data: {
             messages: [],
-            fields: ['scrappTime', 'title', 'damaged', 'addedTime', 'url']
+            fields: ['scrappTime', 'title', 'damaged', 'addedTime', 'url'],
+            newLink: ""
         },
         methods: {
             connect: function () {
@@ -41,6 +42,7 @@ $(function () {
                     alert("Please connect first");
                 }
             },
+
             handleMessageReceipt: function (messageOutput) {
                 messageOutput.forEach((value, index) => {
                     let time = new Date().toLocaleString().replace(',', '');
@@ -49,6 +51,7 @@ $(function () {
                     console.log(value + index);
                 });
             },
+
             isJson: function (item) {
                 item = typeof item !== "string" ? JSON.stringify(item) : item;
                 try {
@@ -57,6 +60,15 @@ $(function () {
                     return false;
                 }
                 return typeof item === "object" && item !== null;
+            },
+
+            addLinkToScrapp: function () {
+                if (stompClient != null) {
+                    stompClient.send("/ws/addLink", {}, this.newLink);
+                    this.newLink = '';
+                } else {
+                    alert("Please connect first");
+                }
             }
         }
     });
