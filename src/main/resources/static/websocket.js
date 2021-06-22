@@ -5,7 +5,8 @@ $(function () {
         data: {
             messages: [],
             fields: ['scrappTime', 'title', 'damaged', 'addedTime', 'url'],
-            newLink: ""
+            newLink: "",
+            delay: "60"
         },
         methods: {
             connect: function () {
@@ -29,6 +30,13 @@ $(function () {
                         alert("Please connect first");
                     }
                 });
+            },
+            connectWithCustomDelay: function () {
+                if (stompClient != null) {
+                    stompClient.send("/ws/start", {}, this.delay);
+                } else {
+                    alert("Please connect first");
+                }
 
             },
             disconnect: function () {
@@ -70,6 +78,9 @@ $(function () {
                     alert("Please connect first");
                 }
             }
+        },
+        beforeMount() {
+            this.connect();
         }
     });
 });
