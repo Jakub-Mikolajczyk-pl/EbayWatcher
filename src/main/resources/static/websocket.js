@@ -6,7 +6,8 @@ $(function () {
             messages: [],
             fields: ['scrappTime', 'title', 'damaged', 'addedTime', 'url'],
             newLink: "",
-            delay: "60"
+            delay: "60",
+            spinner: true
         },
         methods: {
             connect: function () {
@@ -20,9 +21,11 @@ $(function () {
                         function (messageOutput) {
                             console.log("Checking message");
                             if (that.isJson(messageOutput.body)) {
+                                that.spinner = false;
                                 that.handleMessageReceipt(JSON.parse(messageOutput.body))
                             }
                             console.log("Wrong message type: " + messageOutput.body)
+                            that.spinner = true;
                         });
                     if (stompClient != null) {
                         stompClient.send("/ws/startDefault");
